@@ -1,6 +1,8 @@
 const fs = require('fs');
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+const mongoose = require('mongoose');
+const { ApolloServer, gql } = require('apollo-server-express');
+
 
 const initialProducts = [
   {
@@ -46,17 +48,27 @@ function productAdd(_, { product }) {
   return product;
 }
 
-const server = new ApolloServer({
-  typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
-  resolvers,
-});
+const server = async () => {
+      const app = express();
+      const server = new ApolloServer({
+      typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
+      resolvers,
+    })
 
-const app = express();
+    app.use(express.static('public'));
 
-app.use(express.static('public'));
+    server.applyMiddleware({ app, path: '/graphql' });
 
-server.applyMiddleware({ app, path: '/graphql' });
+    try{
+      await mongoose.connect("mongodb+srv://nour:Hassan56@cluster0.txcqn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {useNewUrlParser: true})
+    }catch(err){
+      console.log(err)
+    }
 
-app.listen(3000, function () {
-  console.log('App started on port 3000');
-});
+    app.listen(3000,  ()=> {
+      console.log('App started on port 3000');
+    })
+
+}
+
+server();

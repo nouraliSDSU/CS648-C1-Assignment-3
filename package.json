@@ -21,6 +21,7 @@
     "apollo-server-express": "^2.3.1",
     "express": "^4.16.4",
     "graphql": "^0.13.2",
+    "mongoose": "^6.2.6",
     "nodemon": "^1.18.9"
   },
   "devDependencies": {
